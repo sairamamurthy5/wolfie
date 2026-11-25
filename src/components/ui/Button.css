@@ -1,0 +1,45 @@
+
+.wt-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.wt-button--primary {
+  background-color: #8B5CF6;
+  color: #FFFFFF;
+}
+
+.wt-button--primary:hover {
+  background-color: #7C3AED;
+  transform: translateY(-2px);
+}
+
+.wt-button--secondary {
+  background-color: #1F2937;
+  color: #F9FAFB;
+  border: 1px solid #374151;
+}
+
+.wt-button--secondary:hover {
+  background-color: #374151;
+}
+
+.wt-button--danger {
+  background-color: #EF4444;
+  color: #FFFFFF;
+}
+
+.wt-button--danger:hover {
+  background-color: #DC2626;
+}
+
+.wt-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -1,0 +1,22 @@
+
+.wt-card {
+  background-color: #1F2937;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 20px;
+  color: #F9FAFB;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wt-card__title {
+  color: #A78BFA;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.wt-card__content {
+  color: #F9FAFB;
+  font-size: 15px;
+}
