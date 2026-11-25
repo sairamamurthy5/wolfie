@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game Phase Interface | WT002-RAM-01</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#0d1117;color:#e7ecf3;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding:32px clamp(14px,4vw,40px) 48px}
+.wrap{max-width:860px;margin:auto}
+h1{font:700 22px Cinzel,Georgia,serif;margin:0 0 4px}
+.sub{color:#8b97a8;margin:0 0 22px;font-size:14px}
+pre{background:#131a24;border:1px solid #243041;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.6;color:#b9c6d8;margin:22px 0 0}
+h2{font-size:14px;margin:26px 0 0;color:#8b97a8;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Game phase interface</h1>
+  <p class="sub">Day/Night phase presentation · WT002-RAM-01. The toggle below is local and only demonstrates switching.</p>
+
+  <game-phase phase="night"></game-phase>
+
+</div>
+
+<script>
+class GamePhase extends HTMLElement {
+  static get observedAttributes(){return ["phase"]}
+  static PHASES = {
+    night:{title:"Night Phase",text:"The village is asleep. Special roles prepare their actions.",chip:"Special roles active",next:"Switch to Day Phase",icon:"🌙"},
+    day:{title:"Day Phase",text:"The village wakes up. Players discuss and identify suspicious behaviour.",chip:"Discussion open",next:"Switch to Night Phase",icon:"☀️"}
+  };
+  constructor(){super();this.attachShadow({mode:"open"});this._built=false}
+  connectedCallback(){
+    if(!["night","day"].includes(this.getAttribute("phase")))this.setAttribute("phase","night");
+    this._build();this._render(false);
+  }
+  attributeChangedCallback(n,o,v){if(this._built&&o!==v)this._render(true)}
+  get phase(){return this.getAttribute("phase")==="day"?"day":"night"}
+  set phase(v){if(v==="day"||v==="night")this.setAttribute("phase",v)}
+  toggle(){this.phase=this.phase==="night"?"day":"night"}
+
+  _build(){
+    if(this._built)return;this._built=true;
+    const stars=[[8,12],[18,30],[27,8],[36,22],[45,10],[54,28],[63,9],[72,24],[80,13],[90,30],[14,46],[50,44],[86,50],[68,40],[33,40]]
+      .map(([x,y],i)=>`<i class="star" style="left:${x}%;top:${y}%;animation-delay:${(i*.37)%3}s"></i>`).join("");
+    this.shadowRoot.innerHTML=`
+<style>
+:host{display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+.card{--wall:#1a2340;--roof:#10162b;--win:#0f1630;--ground:#0b1220;--hill:#121b33;--ink:#e8eefc;--mute:#9fb0d0;--accent:#9db4ff;--panel:#0f1830;--line:#2a3a66;
+ border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:background .9s,border-color .9s,color .9s}
+.card[data-phase=day]{--wall:#f3e2c0;--roof:#b8573d;--win:#8ec5e6;--ground:#5f9a52;--hill:#79b068;--ink:#2a2418;--mute:#6b5f45;--accent:#c2631f;--panel:#fff4d6;--line:#e5c77d}
+.scene{position:relative;height:clamp(210px,38vw,300px);overflow:hidden}
+.sky{position:absolute;inset:0;transition:opacity 1s}
+.sky.n{background:linear-gradient(#050a1c,#142048 60%,#2a3a72)}
+.sky.d{background:linear-gradient(#6fc0ee,#a9dcf5 55%,#ffeec0);opacity:0}
+.card[data-phase=day] .sky.d{opacity:1}
+.stars{position:absolute;inset:0 0 40% 0;transition:opacity 1s}.card[data-phase=day] .stars{opacity:0}
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25;transform:scale(.6)}}
+.orb{position:absolute;width:62px;height:62px;border-radius:50%;transition:transform 1.4s cubic-bezier(.5,0,.2,1),opacity 1s}
+.moon{right:14%;top:12%;background:radial-gradient(circle at 35% 35%,#fffdf0,#e5e0c4 70%);box-shadow:0 0 40px #dfe6ffaa,0 0 90px #8fa4ff55;overflow:hidden}
+.moon:after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#cfcaae;left:36px;top:14px;box-shadow:-18px 22px 0 -3px #cfcaae}
+.sun{left:14%;top:10%;background:radial-gradient(circle,#fff6c4,#ffcf45 70%);box-shadow:0 0 50px #ffd96acc,0 0 110px #ffd96a66;animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 70px #ffd96a,0 0 140px #ffd96a88}}
+.card[data-phase=night] .sun{transform:translateY(260px);opacity:0}
+.card[data-phase=day] .moon{transform:translateY(260px);opacity:0}
+.cloud{position:absolute;height:22px;width:84px;border-radius:30px;background:#fff;opacity:0;transition:opacity 1s;animation:float 38s linear infinite}
+.cloud:before,.cloud:after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud:before{width:36px;height:36px;left:12px;top:-16px}.cloud:after{width:28px;height:28px;left:42px;top:-10px}
+.card[data-phase=day] .cloud{opacity:.92}
+.c1{top:20%;left:-12%}.c2{top:36%;left:-12%;animation-duration:52s;animation-delay:-20s;transform:scale(.75)}
+@keyframes float{to{left:112%}}
+svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:58%}
+.hill{fill:var(--hill);transition:fill 1s}.ground{fill:var(--ground);transition:fill 1s}
+.wall{fill:var(--wall);transition:fill 1s}.roof{fill:var(--roof);transition:fill 1s}
+.win{fill:var(--win);transition:fill 1s}
+.card[data-phase=night] .win.lit{fill:#ffc860;animation:flick 3s ease-in-out infinite}
+@keyframes flick{40%{opacity:.7}60%{opacity:1}}
+.smoke{fill:#fff;opacity:0;transition:opacity 1s}.card[data-phase=day] .smoke{opacity:.65;animation:rise 4s ease-in infinite}
+@keyframes rise{from{transform:translateY(0);opacity:.7}to{transform:translateY(-26px);opacity:0}}
+.info{padding:22px clamp(18px,4vw,30px) 24px;display:flex;gap:18px 24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.copy{flex:1 1 340px;min-width:0}
+.label{margin:0;font-size:13px;color:var(--mute)}
+h2{margin:2px 0 8px;font:700 clamp(28px,5vw,38px)/1.1 Cinzel,Georgia,serif;color:var(--ink)}
+.text{margin:0;font-size:18px;line-height:1.55;color:var(--mute);max-width:46ch}
+.copy.swap>*{animation:in .6s cubic-bezier(.2,.8,.2,1) both}.copy.swap>*:nth-child(2){animation-delay:.07s}.copy.swap>*:nth-child(3){animation-delay:.14s}.copy.swap>*:nth-child(4){animation-delay:.2s}
+@keyframes in{from{opacity:0;transform:translateY(12px);filter:blur(4px)}}
+.chip{display:inline-block;margin-top:12px;padding:3px 12px;border:1px solid var(--accent);border-radius:99px;font-size:13px;font-weight:600;color:var(--accent)}
+.toggle{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 16px 8px 8px;border-radius:99px;cursor:pointer;font:600 15px system-ui,sans-serif;transition:background .2s,border-color .9s,color .9s}
+.toggle[hidden]{display:none}
+.toggle:hover{background:#ffffff14}
+.toggle:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.track{position:relative;width:58px;height:30px;border-radius:99px;background:#1f2d57;transition:background .6s;flex:none}
+.card[data-phase=day] .track{background:#7ec3ea}
+.knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:14px;background:#fff;transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.card[data-phase=day] .knob{transform:translateX(28px)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+<section class="card" part="card">
+  <div class="scene" aria-hidden="true">
+    <div class="sky n"></div><div class="sky d"></div>
+    <div class="stars">${stars}</div>
+    <div class="orb moon"></div><div class="orb sun"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div>
+    <svg viewBox="0 0 400 120" preserveAspectRatio="xMidYMax slice">
+      <path class="hill" d="M0 70 Q70 30 150 62 T300 55 T400 66 V120 H0Z"/>
+      <g>
+        <rect class="wall" x="60" y="62" width="62" height="40"/><path class="roof" d="M54 64 L91 36 L128 64Z"/>
+        <rect class="win lit" x="74" y="76" width="12" height="14"/><rect class="win" x="98" y="76" width="12" height="14"/>
+        <rect class="wall" x="160" y="48" width="52" height="54"/><path class="roof" d="M154 50 L186 24 L218 50Z"/>
+        <rect class="roof" x="198" y="20" width="9" height="16"/><circle class="smoke" cx="202" cy="16" r="5"/>
+        <rect class="win" x="172" y="62" width="11" height="13"/><rect class="win" x="192" y="62" width="11" height="13"/><rect class="win" x="182" y="84" width="11" height="14"/>
+        <rect class="wall" x="260" y="68" width="70" height="34"/><path class="roof" d="M254 70 L295 44 L336 70Z"/>
+        <rect class="win" x="272" y="80" width="12" height="13"/><rect class="win lit" x="302" y="80" width="12" height="13"/>
+      </g>
+      <rect class="ground" x="0" y="100" width="400" height="20"/>
+    </svg>
+  </div>
+  <div class="info">
+    <div class="copy" id="copy" role="status" aria-live="polite">
+      <p class="label">Current phase</p><h2 id="title"></h2><p class="text" id="text"></p><span class="chip" id="chip"></span>
+    </div>
+    <button class="toggle" id="tg" role="switch" aria-checked="false"><span class="track"><span class="knob" id="knob"></span></span><span id="tglabel"></span></button>
+  </div>
+</section>`;
+    this._q=s=>this.shadowRoot.querySelector(s);
+    this._q("#tg").addEventListener("click",()=>this.toggle());
+  }
+  _render(animate){
+    const p=this.phase,d=GamePhase.PHASES[p];
+    this._q(".card").dataset.phase=p;
+    this._q("#title").textContent=d.title;
+    this._q("#text").textContent="“"+d.text+"”";
+    this._q("#chip").textContent=d.icon+" "+d.chip;
+    this._q("#tglabel").textContent=d.next;
+    this._q("#knob").textContent=d.icon;
+    const tg=this._q("#tg");tg.setAttribute("aria-checked",p==="day");
+    tg.hidden=this.hasAttribute("hide-toggle");
+    if(animate){const c=this._q("#copy");c.classList.remove("swap");void c.offsetWidth;c.classList.add("swap");
+      this.dispatchEvent(new CustomEvent("phasechange",{detail:{phase:p},bubbles:true,composed:true}))}
+  }
+}
+customElements.define("game-phase",GamePhase);
+</script>
+</body>
+</html>

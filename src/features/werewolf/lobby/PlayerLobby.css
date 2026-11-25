@@ -1,0 +1,255 @@
+
+.lobby-page {
+  width: 100%;
+  color: #f8fafc;
+}
+
+.lobby-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.lobby-header {
+  margin-bottom: 32px;
+}
+
+.lobby-eyebrow {
+  color: #fbbf24;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.lobby-header h1 {
+  margin: 12px 0;
+  font-size: clamp(30px, 5vw, 42px);
+}
+
+.lobby-description {
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.lobby-room {
+  padding: 28px;
+  border: 1px solid #334155;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at top right, #253b3b 0%, transparent 45%),
+    linear-gradient(145deg, #1e293b, #111827);
+}
+
+.room-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #334155;
+}
+
+.room-label {
+  color: #94a3b8;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.room-heading h2 {
+  margin: 8px 0 0;
+  font-size: 22px;
+}
+
+.room-code {
+  padding: 9px 13px;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  color: #fbbf24;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.lobby-progress {
+  margin: 26px 0;
+}
+
+.progress-information {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.progress-information strong {
+  color: #86efac;
+}
+
+.progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #334155;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #16a34a, #86efac);
+  transition: width 250ms ease;
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #334155;
+  border-radius: 13px;
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.player-avatar {
+  display: grid;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid #64748b;
+  border-radius: 50%;
+  background: #334155;
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.player-information {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-information h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.player-information span {
+  font-size: 12px;
+}
+
+.ready-text {
+  color: #86efac;
+}
+
+.waiting-text {
+  color: #fbbf24;
+}
+
+.readiness-button {
+  flex-shrink: 0;
+  padding: 8px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.is-ready {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+.is-not-ready {
+  border-color: #92400e;
+  background: #451a03;
+  color: #fde68a;
+}
+
+.readiness-button:focus-visible,
+.start-game-button:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+}
+
+.lobby-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid #334155;
+}
+
+.lobby-footer p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.start-game-button {
+  padding: 13px 22px;
+  border: none;
+  border-radius: 9px;
+  background: #8b5cf6;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.start-game-button:hover:not(:disabled) {
+  background: #7c3aed;
+}
+
+.start-game-button:disabled {
+  background: #475569;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.lobby-note {
+  margin-top: 20px;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 650px) {
+  .lobby-room {
+    padding: 18px;
+  }
+
+  .player-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-card {
+    flex-wrap: wrap;
+  }
+
+  .lobby-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .start-game-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill {
+    transition: none;
+  }
+}
